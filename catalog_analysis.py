@@ -37,12 +37,23 @@ def catalog_age_stats(movies, current_year=2026):
 
 def duration_in_hours(movies):
     return '\n'.join(f"{movie['title']}: {movie['duration_min'] // 60}ч {movie['duration_min'] % 60}мин" for movie in movies)
+# Этап 2.
+def rating_tear(rating):
+    if rating >= 9.0:
+        return "Шедевр"
+    elif rating >= 7.0:
+        return "Хорошо"
+    else:
+        return "Средне" if rating >= 5.0 else "Плохо"
 
-print("Средний рейтинг:", average_rating(movies))
-age_stats = catalog_age_stats(movies)
-print("Статистика возраста", age_stats)
-duration_hours = duration_in_hours(movies)
-print("Длительность", duration_hours)
+def decade_label(year):
+    match year:
+        case old if year < 2015:
+            return "Старые"
+        case resent if 2015 <= year <= 2020:
+            return "Недавние"
+        case new if 2020 < year:
+            return "Новые"
 
-if type(catalog_age_stats(movies)) == tuple:
-    print("Tuple")
+for i in range(2100, 1998, -1):
+    print(f"{i}s: {decade_label(i)}")
