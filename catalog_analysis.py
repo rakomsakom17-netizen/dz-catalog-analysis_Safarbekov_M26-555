@@ -54,6 +54,23 @@ def decade_label(year):
             return "Недавние"
         case new if 2020 < year:
             return "Новые"
+# Этап 3.
+for movie in movies:
+    if movie["genres"] == {"comedy"}:
+        continue
+    else:
+        print(f"{movie['title']}")
+i = 0
+while i < len(movies):
+    if movies[i]["rating"] > 9.0:
+        print(f"Первый шедевр из списка: {movies[i]['title']}")
+        break
+    i += 1
+else:
+    print("Фильмов с рейтингом выше 9.0 нет")
 
-for i in range(2100, 1998, -1):
-    print(f"{i}s: {decade_label(i)}")
+    
+
+
+
+        
