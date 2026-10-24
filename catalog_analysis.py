@@ -96,4 +96,23 @@ def top_n_by_rating(movies, n):
         result.append(f"({titles_sorted_by_rating(movies)[i]['title']}, {titles_sorted_by_rating(movies)[i]['rating']})")
     return result
 
-print(top_n_by_rating(movies, 3))
+# Этап 6.
+def count_by_genre(movies):
+    genre_count = {}
+    for movie in movies:
+        for genre in movie.get('genres', []):
+            genre_count[genre] = genre_count.get(genre, 0) + 1
+    return genre_count  
+
+def actor_filmography(movies):
+    filmography = {}
+    for movie in movies:
+        title = movie.get('title')
+        for actor in movie.get('actors', []):
+            filmography[actor] = filmography.get(actor, []) + [title]
+    return filmography
+
+hight_rating_movies = {
+    movie["title"]: movie["rating"] for movie in movies if movie["rating"] > average_rating(movies)
+}
+print(f"Фильмы с рейтингом выше среднего:{hight_rating_movies}")
