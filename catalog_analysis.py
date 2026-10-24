@@ -112,7 +112,24 @@ def actor_filmography(movies):
             filmography[actor] = filmography.get(actor, []) + [title]
     return filmography
 
-hight_rating_movies = {
+high_rating_movies = {
     movie["title"]: movie["rating"] for movie in movies if movie["rating"] > average_rating(movies)
 }
-print(f"Фильмы с рейтингом выше среднего:{hight_rating_movies}")
+
+# Этап 7.
+def all_genres(movies):
+    genres = set()
+    for movie in movies:
+        genres.update(movie.get('genres', []))
+    return genres
+
+def common_actors(movie_1, movie_2):
+    if movie_1["actors"] and movie_2["actors"]:
+        result = set(movie_1["actors"]) & set(movie_2["actors"])
+        return result if result else "У фильмов нет общих актеров"
+
+print(common_actors(movies[0], movies[6]))
+
+def genres_only_in_one(movie_a, movie_b):
+    result = set(movie_a.get('genres', [])) - set(movie_b.get('genres', []))
+    return result
