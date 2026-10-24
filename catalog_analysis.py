@@ -1,5 +1,4 @@
 import math
-
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
      "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
@@ -128,8 +127,18 @@ def common_actors(movie_1, movie_2):
         result = set(movie_1["actors"]) & set(movie_2["actors"])
         return result if result else "У фильмов нет общих актеров"
 
-print(common_actors(movies[0], movies[6]))
-
 def genres_only_in_one(movie_a, movie_b):
     result = set(movie_a.get('genres', [])) - set(movie_b.get('genres', []))
     return result
+
+# Этап 8.
+def iter_high_rated(movies, min_rating=8.0):
+    for movie in movies:
+        if movie["rating"] >= min_rating:
+            yield movie
+
+for movie in iter_high_rated(movies):
+    print(format_report_line(movie))
+
+total_duration = sum(movie["duration_min"] for movie in movies if movie["rating"] > 7)
+print(total_duration)
