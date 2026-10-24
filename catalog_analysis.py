@@ -35,8 +35,8 @@ def catalog_age_stats(movies, current_year=2026):
     avg_age = round(sum(years) / len(years), 1) if years else 0
     return oldest_movie, max(years), newest_movie, min(years), avg_age
 
-def duration_in_hours(movies):
-    return '\n'.join(f"{movie['title']}: {movie['duration_min'] // 60}ч {movie['duration_min'] % 60}мин" for movie in movies)
+def duration_in_hours(duration_min):
+    return (f"{duration_min // 60}ч {duration_min % 60}мин")
 # Этап 2.
 def rating_tear(rating):
     if rating >= 9.0:
@@ -60,6 +60,7 @@ for movie in movies:
         continue
     else:
         print(f"{movie['title']}")
+
 i = 0
 while i < len(movies):
     if movies[i]["rating"] > 9.0:
@@ -69,8 +70,21 @@ while i < len(movies):
 else:
     print("Фильмов с рейтингом выше 9.0 нет")
 
+# Этап 4.
+def normalize_title(title):
+    normalized = str(title)
+    for i in range(len(normalized)):
+        if i == 0 or normalized[i - 1] == " ":
+            normalized = normalized[:i] + normalized[i].upper() + normalized[i + 1:]
+    else:
+        normalized = normalized[:i] + normalized[i].lower() + normalized[i + 1:]
+    return normalized
+
+def make_slug(title):
+    return title.lower().replace(" ", "-")
+
+def format_report_line(movie):
+    return str(f"{normalize_title(movie['title'])} ({movie['year']}) - {movie['rating']}/10, {duration_in_hours(movie['duration_min'])}, жанры: {', '.join(movie['genres'])}")
+for movie in movies:
+    print(format_report_line(movie))
     
-
-
-
-        
