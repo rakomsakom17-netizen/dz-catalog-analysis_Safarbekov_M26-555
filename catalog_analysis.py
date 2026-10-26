@@ -1,7 +1,9 @@
 import math
+
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
-     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
+     "rating": 8.6, "duration_min": 155,
+     "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
     {"title": "Kitchen Stories", "year": 2019, "genres": {"comedy", "drama"},
      "rating": 7.1, "duration_min": 98, "actors": ["A. Novak", "M. Ferguson"]},
     {"title": "silent hours", "year": 2016, "genres": {"thriller", "drama"},
@@ -21,53 +23,65 @@ movies = [
     {"title": "Red Harbor", "year": 2018, "genres": {"action", "thriller"},
      "rating": 7.3, "duration_min": 129, "actors": ["P. Diaz", "T. Chalamet"]},
 ]
-# Этап 1.
 
+# Этап 1.
 def average_rating(movies):
-    total_rating = sum(movie["rating"] for movie in movies)
-    return round(total_rating / len(movies) if movies else 0, 1)
+    return round(sum(movie["rating"] for movie in movies) / len(movies) if movies else 0, 1)
 
 def catalog_age_stats(movies, current_year=2026):
     years = [current_year - movie["year"] for movie in movies]
     oldest_movie = movies[years.index(max(years))]["title"] if years else None
     newest_movie = movies[years.index(min(years))]["title"] if years else None
-    avg_age = round(sum(years) / len(years), 1) if years else 0
-    return oldest_movie, max(years), newest_movie, min(years), avg_age
+    avg_age = math.ceil(sum(years) / len(years))
+    return oldest_movie, newest_movie,  avg_age
 
 def duration_in_hours(duration_min):
     return (f"{duration_min // 60}ч {duration_min % 60}мин")
+
 # Этап 2.
 def rating_tear(rating):
     if rating >= 9.0:
-        return "Шедевр"
+        return "шедевр"
     elif rating >= 7.0:
-        return "Хорошо"
+        return "хорошо"
     else:
-        return "Средне" if rating >= 5.0 else "Плохо"
+        return "средне" if rating >= 5.0 else "слабо"
 
 def decade_label(year):
     match year:
-        case old if year < 2015:
+        case _ if year < 2015:
             return "Старые"
-        case resent if 2015 <= year <= 2020:
+        case _ if 2015 <= year <= 2020:
             return "Недавние"
-        case new if 2020 < year:
+        case _ if 2020 < year:
             return "Новые"
+        
 # Этап 3.
-for movie in movies:
-    if movie["genres"] == {"comedy"}:
-        continue
+def continue_loop(movies):
+    for movie in movies:
+        if "comedy" in movie["genres"]:
+            continue
+        else:
+            print(f"{movie['title']}")
+            
+def break_loop(movies):
+    i = 0
+    while i < len(movies):
+        if movies[i]["rating"] > 9.0:
+            print(movies[i]['title'])
+            break
+        i += 1
     else:
-        print(f"{movie['title']}")
+        print("Шедевров не найдено")
 
-i = 0
-while i < len(movies):
-    if movies[i]["rating"] > 9.0:
-        print(f"Первый шедевр из списка: {movies[i]['title']}")
-        break
-    i += 1
-else:
-    print("Фильмов с рейтингом выше 9.0 нет")
+def count_long_movies(movies, threshold=120):
+    count = 0
+    for movie in movies:
+        if movie["duration_min"] > threshold:
+            count += 1
+        else:
+            continue
+    return count
 
 # Этап 4.
 def normalize_title(title):
@@ -80,20 +94,25 @@ def normalize_title(title):
     return normalized
 
 def make_slug(title):
-    return title.lower().replace(" ", "-")
+    return str(title).lower().replace(" ", "-")
 
 def format_report_line(movie):
-    return str(f"{normalize_title(movie['title'])} ({movie['year']}) - {movie['rating']}/10, {duration_in_hours(movie['duration_min'])}, жанры: {', '.join(movie['genres'])}")
-
+        return str(f"{normalize_title(movie["title"])} ({movie["year"]}) - \
+{movie["rating"]}/10, {duration_in_hours(movie["duration_min"])}, \
+жанры: {', '.join(movie["genres"])}")
+    
 # Этап 5.
 def titles_sorted_by_rating(movies):
     return sorted(movies, key=lambda x: x["rating"], reverse=True)
 
 def top_n_by_rating(movies, n):
     result = []
-    for i in range(0, min(n, len(titles_sorted_by_rating(movies)))):
-        result.append(f"({titles_sorted_by_rating(movies)[i]['title']}, {titles_sorted_by_rating(movies)[i]['rating']})")
+    movies = titles_sorted_by_rating(movies)
+    for i in range(0, n-1):
+        result = " ".join(str(movies[i]["title"]))
+        result = " ".join(str(movies[i]["rating"]))
     return result
+
 
 # Этап 6.
 def count_by_genre(movies):
@@ -112,7 +131,8 @@ def actor_filmography(movies):
     return filmography
 
 high_rating_movies = {
-    movie["title"]: movie["rating"] for movie in movies if movie["rating"] > average_rating(movies)
+    movie["title"]: movie["rating"] for movie in movies if \
+movie["rating"] > average_rating(movies)
 }
 
 # Этап 7.
@@ -137,8 +157,36 @@ def iter_high_rated(movies, min_rating=8.0):
         if movie["rating"] >= min_rating:
             yield movie
 
-for movie in iter_high_rated(movies):
-    print(format_report_line(movie))
-
 total_duration = sum(movie["duration_min"] for movie in movies if movie["rating"] > 7)
 print(total_duration)
+
+# Вывод этапов
+# Этап 1
+print("-----------------ВЫВОД ЭТАПОВ-----------------")
+
+print(".............ЭТАП 1.............")
+print(average_rating(movies))
+print(catalog_age_stats(movies))
+for movie in movies:
+    print(duration_in_hours(movie["duration_min"]))
+
+print(".............ЭТАП 2.............")
+for movie in movies:
+    print(rating_tear(movie["rating"]))
+for movie in movies:
+    print(decade_label(movie["year"]))
+
+print(".............ЭТАП 3.............")
+continue_loop(movies)
+break_loop(movies)
+print(count_long_movies(movies))
+
+print(".............ЭТАП 4.............")
+print(normalize_title([movies[0]["title"]]))
+print(make_slug([movies[0]["title"]]))
+print(format_report_line(movies[0]))
+
+print(".............ЭТАП 5.............")
+print(titles_sorted_by_rating(movies))
+print("\n")
+print(top_n_by_rating(movies,3))
