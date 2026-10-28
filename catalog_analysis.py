@@ -57,22 +57,22 @@ def decade_label(year):
             return "Новые"
         
 # Этап 3.
-def continue_loop(movies):
-    for movie in movies:
-        if "comedy" in movie["genres"]:
-            continue
-        else:
-            print(f"{movie['title']}")
-            
-def break_loop(movies):
-    i = 0
-    while i < len(movies):
-        if movies[i]["rating"] > 9.0:
-            print(movies[i]['title'])
-            break
-        i += 1
+
+for movie in movies:
+    if "comedy" in movie["genres"]:
+         continue
     else:
-        print("Шедевров не найдено")
+         print(f"{movie['title']}")
+            
+
+i = 0
+while i < len(movies):
+    if movies[i]["rating"] > 9.0:
+        print(movies[i]['title'])
+        break
+    i += 1
+else:
+    print("Шедевров не найдено")
 
 def count_long_movies(movies, threshold=120):
     count = 0
@@ -108,11 +108,9 @@ def titles_sorted_by_rating(movies):
 def top_n_by_rating(movies, n):
     result = []
     movies = titles_sorted_by_rating(movies)
-    for i in range(0, n-1):
-        result = " ".join(str(movies[i]["title"]))
-        result = " ".join(str(movies[i]["rating"]))
+    for movie in movies[:n]:
+        result.append((movie["title"], movie["rating"]))
     return result
-
 
 # Этап 6.
 def count_by_genre(movies):
@@ -148,8 +146,7 @@ def common_actors(movie_1, movie_2):
         return result if result else "У фильмов нет общих актеров"
 
 def genres_only_in_one(movie_a, movie_b):
-    result = set(movie_a.get('genres', [])) - set(movie_b.get('genres', []))
-    return result
+    return set(movie_a.get('genres', [])) - set(movie_b.get('genres', []))
 
 # Этап 8.
 def iter_high_rated(movies, min_rating=8.0):
@@ -158,10 +155,9 @@ def iter_high_rated(movies, min_rating=8.0):
             yield movie
 
 total_duration = sum(movie["duration_min"] for movie in movies if movie["rating"] > 7)
-print(total_duration)
+print(f"Суммарная длительность: {total_duration}")
 
-# Вывод этапов
-# Этап 1
+# Для проверки
 print("-----------------ВЫВОД ЭТАПОВ-----------------")
 
 print(".............ЭТАП 1.............")
@@ -177,8 +173,6 @@ for movie in movies:
     print(decade_label(movie["year"]))
 
 print(".............ЭТАП 3.............")
-continue_loop(movies)
-break_loop(movies)
 print(count_long_movies(movies))
 
 print(".............ЭТАП 4.............")
@@ -187,6 +181,21 @@ print(make_slug([movies[0]["title"]]))
 print(format_report_line(movies[0]))
 
 print(".............ЭТАП 5.............")
-print(titles_sorted_by_rating(movies))
-print("\n")
+print(titles_sorted_by_rating(movies[:1]))
 print(top_n_by_rating(movies,3))
+
+print(".............ЭТАП 6.............")
+print(count_by_genre(movies))
+print("\n")
+print(actor_filmography(movies))
+print("\n")
+print(high_rating_movies)
+
+print(".............ЭТАП 7.............")
+print(all_genres(movies))
+print("\n")
+print(common_actors(movies[0],movies[3]))
+print(common_actors(movies[0],movies[6]))
+print("\n")
+print(genres_only_in_one(movies[5:6], movies[:5]))
+print(genres_only_in_one(movies[0], movies[3]))
