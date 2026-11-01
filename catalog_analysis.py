@@ -97,9 +97,9 @@ def make_slug(title):
     return str(title).lower().replace(" ", "-")
 
 def format_report_line(movie):
-        return str(f"{normalize_title(movie["title"])} ({movie["year"]}) - \
+        return str(f' "{normalize_title(movie["title"])}" ({movie["year"]}) - \
 {movie["rating"]}/10, {duration_in_hours(movie["duration_min"])}, \
-жанры: {', '.join(movie["genres"])}")
+жанры: {', '.join(movie["genres"])}')
     
 # Этап 5.
 def titles_sorted_by_rating(movies):
@@ -118,7 +118,7 @@ def count_by_genre(movies):
     for movie in movies:
         for genre in movie.get('genres', []):
             genre_count[genre] = genre_count.get(genre, 0) + 1
-    return genre_count  
+    return genre_count
 
 def actor_filmography(movies):
     filmography = {}
@@ -138,15 +138,21 @@ def all_genres(movies):
     genres = set()
     for movie in movies:
         genres.update(movie.get('genres', []))
-    return genres
+    return sorted(genres)
 
 def common_actors(movie_1, movie_2):
     if movie_1["actors"] and movie_2["actors"]:
         result = set(movie_1["actors"]) & set(movie_2["actors"])
         return result if result else "У фильмов нет общих актеров"
 
-def genres_only_in_one(movie_a, movie_b):
-    return set(movie_a.get('genres', [])) - set(movie_b.get('genres', []))
+def genres_only_in_one(movies_a, movies_b):
+    genres_a = all_genres(movies_a)
+    genres_b = all_genres(movies_b)
+    if (set(genres_a) - set(genres_b)) == set():
+        return "Таких жанров нет"
+    else:
+        return set(genres_a) - set(genres_b)
+
 
 # Этап 8.
 def iter_high_rated(movies, min_rating=8.0):
@@ -157,45 +163,67 @@ def iter_high_rated(movies, min_rating=8.0):
 total_duration = sum(movie["duration_min"] for movie in movies if movie["rating"] > 7)
 print(f"Суммарная длительность: {total_duration}")
 
+#Этап 9.
+def build_report(movies):
+    print("\nОТЧЁТ ПО КАТАЛОГУ")
+    print(f"Средний рейтинг: {average_rating(movies)}")
+    print(f"Средний возраст фильмов {catalog_age_stats(movies)[2]}")
+    print("\nТоп-3 фильма:")
+    print(f" {format_report_line(titles_sorted_by_rating(movies)[0])}")
+    print(f" {format_report_line(titles_sorted_by_rating(movies)[1])}")
+    print(f" {format_report_line(titles_sorted_by_rating(movies)[2])}")
+    print("\n Фильмов по жанрам:")
+    for genre, count in sorted(count_by_genre(movies).items(), \
+key=lambda item: item[1], reverse=True):
+        print(f" {genre} - {count}")
+    print(f"\nВсе жанры каталога: {", ".join(all_genres(movies))}")
+
+build_report(movies)
+
 # Для проверки
-print("-----------------ВЫВОД ЭТАПОВ-----------------")
+# print("-----------------ВЫВОД ЭТАПОВ-----------------")
 
-print(".............ЭТАП 1.............")
-print(average_rating(movies))
-print(catalog_age_stats(movies))
-for movie in movies:
-    print(duration_in_hours(movie["duration_min"]))
+# print(".............ЭТАП 1.............")
+# print(average_rating(movies))
+# print(catalog_age_stats(movies))
+# for movie in movies:
+#     print(duration_in_hours(movie["duration_min"]))
 
-print(".............ЭТАП 2.............")
-for movie in movies:
-    print(rating_tear(movie["rating"]))
-for movie in movies:
-    print(decade_label(movie["year"]))
+# print(".............ЭТАП 2.............")
+# for movie in movies:
+#     print(rating_tear(movie["rating"]))
+# for movie in movies:
+#     print(decade_label(movie["year"]))
 
-print(".............ЭТАП 3.............")
-print(count_long_movies(movies))
+# print(".............ЭТАП 3.............")
+# print(count_long_movies(movies))
 
-print(".............ЭТАП 4.............")
-print(normalize_title([movies[0]["title"]]))
-print(make_slug([movies[0]["title"]]))
-print(format_report_line(movies[0]))
+# print(".............ЭТАП 4.............")
+# print(normalize_title([movies[0]["title"]]))
+# print(make_slug([movies[0]["title"]]))
+# print(format_report_line(movies[0]))
 
-print(".............ЭТАП 5.............")
-print(titles_sorted_by_rating(movies[:1]))
-print(top_n_by_rating(movies,3))
+# print(".............ЭТАП 5.............")
+# print(titles_sorted_by_rating(movies[:1]))
+# print(top_n_by_rating(movies,3))
 
-print(".............ЭТАП 6.............")
-print(count_by_genre(movies))
-print("\n")
-print(actor_filmography(movies))
-print("\n")
-print(high_rating_movies)
+# print(".............ЭТАП 6.............")
+# print(count_by_genre(movies))
+# print("\n")
+# print(actor_filmography(movies))
+# print("\n")
+# print(high_rating_movies)
 
-print(".............ЭТАП 7.............")
-print(all_genres(movies))
-print("\n")
-print(common_actors(movies[0],movies[3]))
-print(common_actors(movies[0],movies[6]))
-print("\n")
-print(genres_only_in_one(movies[5:6], movies[:5]))
-print(genres_only_in_one(movies[0], movies[3]))
+# print(".............ЭТАП 7.............")
+# print(all_genres(movies))
+# print("\n")
+# print(common_actors(movies[0],movies[3]))
+# print(common_actors(movies[0],movies[6]))
+# print("\n")
+# print(genres_only_in_one(movies[5:6], movies[:5]))
+
+# print(".............ЭТАП 8.............")
+# for movie in iter_high_rated(movies):
+#     print(format_report_line(movie))
+# print(f"Общая длительность: \
+# {sum(m["duration_min"] for m in movies if m["rating"] > 7)}")
