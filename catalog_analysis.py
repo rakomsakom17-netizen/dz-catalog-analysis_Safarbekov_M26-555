@@ -89,8 +89,6 @@ def normalize_title(title):
     for i in range(len(normalized)):
         if i == 0 or normalized[i - 1] == " ":
             normalized = normalized[:i] + normalized[i].upper() + normalized[i + 1:]
-    else:
-        normalized = normalized[:i] + normalized[i].lower() + normalized[i + 1:]
     return normalized
 
 def make_slug(title):
@@ -180,7 +178,7 @@ key=lambda item: item[1], reverse=True):
 
 build_report(movies)
 
-# Для проверки
+##Для проверки
 # print("-----------------ВЫВОД ЭТАПОВ-----------------")
 
 # print(".............ЭТАП 1.............")
@@ -199,8 +197,8 @@ build_report(movies)
 # print(count_long_movies(movies))
 
 # print(".............ЭТАП 4.............")
-# print(normalize_title([movies[0]["title"]]))
-# print(make_slug([movies[0]["title"]]))
+# print(normalize_title(movies[2]["title"]))
+# print(make_slug(movies[0]["title"]))
 # print(format_report_line(movies[0]))
 
 # print(".............ЭТАП 5.............")
