@@ -176,7 +176,9 @@ key=lambda item: item[1], reverse=True):
         print(f" {genre} - {count}")
     print(f"\nВсе жанры каталога: {", ".join(all_genres(movies))}")
 
-build_report(movies)
+if __name__ == "__main__":
+    build_report(movies)
+
 
 ##Для проверки
 # print("-----------------ВЫВОД ЭТАПОВ-----------------")
